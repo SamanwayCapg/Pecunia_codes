@@ -15,6 +15,10 @@ namespace Pecunia.DataAccessLayer
 
         public bool AddEmployeeDAL(Employee newEmployee)
         {
+            DateTime time = DateTime.Now;
+            string employeeID = "EMP" + time.ToString("yyyyMMddhhmmss"); 
+            newEmployee.EmployeeID = employeeID;
+
             bool employeeAdded = false;
             try
             {
@@ -34,7 +38,7 @@ namespace Pecunia.DataAccessLayer
             return employeeList;
         }
 
-        public Employee SearchEmployeeDAL(int searchEmployeeID)
+        public Employee SearchEmployeeDAL(string searchEmployeeID)
         {
             Employee searchEmployee = null;
             try
@@ -100,7 +104,7 @@ namespace Pecunia.DataAccessLayer
 
         }
 
-        public bool DeleteEmployeeDAL(int deleteEmployeeID)
+        public bool DeleteEmployeeDAL(string deleteEmployeeID)
         {
             bool employeeDeleted = false;
             try

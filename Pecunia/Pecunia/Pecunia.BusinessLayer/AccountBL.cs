@@ -84,7 +84,7 @@ namespace Pecunia.BusinessLayer
                 if (AccnogenCurrent.Count == 0)
 
                 {
-                    account.AccountNo = 400001;                 // Account No of Savings Account Starts with 4 series
+                    account.AccountNo = 400001;                 // Account No of Current Account Starts with 4 series
                     AccnogenCurrent.Add(account.AccountNo);
                 }
 
@@ -111,7 +111,7 @@ namespace Pecunia.BusinessLayer
                 if (AccnogenFD.Count == 0)
 
                 {
-                    account.AccountNo = 300001;                      // Account No of Savings Account Starts with 3 series
+                    account.AccountNo = 300001;                      // Account No of FD Account Starts with 3 series
                     AccnogenFD.Add(account.AccountNo);
                 }
 

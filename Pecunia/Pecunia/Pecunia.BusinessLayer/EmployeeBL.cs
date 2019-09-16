@@ -16,7 +16,7 @@ namespace Pecunia.BusinessLayer
         {
             StringBuilder sb = new StringBuilder();
             bool validEmployee = true;
-            if (employee.EmployeeID <= 0)
+            if (Regex.IsMatch(employee.EmployeeID, "[EMP][0-9]{14}$") == true) 
             {
                 validEmployee = false;
                 sb.Append(Environment.NewLine + "Invalid Employee ID");
@@ -117,7 +117,7 @@ namespace Pecunia.BusinessLayer
             return employeeList;
         }
 
-        public static Employee SearchEmployeeBL(int searchEmployeeID)
+        public static Employee SearchEmployeeBL(string searchEmployeeID)
         {
             Employee searchEmployee = null;
             try
@@ -160,12 +160,12 @@ namespace Pecunia.BusinessLayer
             return employeeUpdated;
         }
 
-        public static bool DeleteEmployeeBL(int deleteEmployeeID)
+        public static bool DeleteEmployeeBL(string deleteEmployeeID)
         {
             bool employeeDeleted = false;
             try
             {
-                if (deleteEmployeeID > 0)
+                if (Regex.IsMatch(deleteEmployeeID, "[EMP][0-9]{14}$") == true)
                 {
                     EmployeeDAL employeeDAL = new EmployeeDAL();
                     employeeDeleted = employeeDAL.DeleteEmployeeDAL(deleteEmployeeID);

@@ -8,9 +8,9 @@ namespace Pecunia.Entities
 {
     public class Employee
     {
-        private int employeeID;
+        private string employeeID;
 
-        public int EmployeeID
+        public string EmployeeID
         {
             get { return employeeID; }
             set { employeeID = value; }
