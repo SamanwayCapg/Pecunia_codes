@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Pecunia.Entities;
 using Pecunia.Exceptions;
 using Pecunia.DataAccessLayer;
 using System.Text.RegularExpressions;
@@ -14,7 +9,7 @@ namespace Pecunia.BusinessLayer
     {
         public bool DebitTransactionByWithdrawalSlipBL(long AccountNo, double Amount)
         {
-
+            // FD accountNo ranges from 30000 - 39999, Current accountNo ranges from 40000-49999, savings accountNo ranges from 50000-59999
             if ((AccountNo > 50000 && AccountNo < 59999) || (AccountNo > 40000 && AccountNo < 49999) || (AccountNo > 30000 && AccountNo < 39999) && Amount <= 50000)
             {
                 TransactionDAL debit = new TransactionDAL();
@@ -54,8 +49,8 @@ namespace Pecunia.BusinessLayer
         }
         public bool CreditTransactionByChequeBL(long AccountNo, double Amount, string ChequeNo)
         {
-
-            if ((AccountNo > 50000 && AccountNo < 59999) || (AccountNo > 40000 && AccountNo < 49999) || (AccountNo > 30000 && AccountNo < 39999) && Amount <= 50000 && ChequeNo.Length == 10 && (Regex.IsMatch(ChequeNo, "^[A-Z0-9]$") == true))
+            
+            if ((AccountNo > 50000 && AccountNo < 59999) || (AccountNo > 40000 && AccountNo < 49999) || (AccountNo > 30000 && AccountNo < 39999) && Amount <= 50000 && ChequeNo.Length == 10 && (ValidateCheque(Ch) == true))
             {
                 TransactionDAL Cheque = new TransactionDAL();
                 return Cheque.CreditTransactionByChequeDAL(AccountNo, Amount, ChequeNo);
@@ -99,6 +94,14 @@ namespace Pecunia.BusinessLayer
             {
                 throw new TransactionDetailsException("Invalid Transaction ID");
             }
+        }
+        public bool ValidateCheque(string ChequeNo)
+        {
+            if (Regex.IsMatch(ChequeNo, "[0-9]{6}$")==true)
+            {
+                return true;
+            }
+            return false;
         }
 
     }

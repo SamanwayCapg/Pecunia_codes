@@ -37,14 +37,14 @@ namespace Pecunia.Exceptions
     }
 
     
-    public class InitialAmountOfFDException : SystemException
+    public class InitialAmountOfFDException : Exception
     {
         public InitialAmountOfFDException(String m) : base(m)
         {
 
         }
     }
-    public class EnterValidCustomerIDException : SystemException
+    public class EnterValidCustomerIDException : Exception
     {
         public EnterValidCustomerIDException(String m) : base(m)
         {
@@ -52,7 +52,7 @@ namespace Pecunia.Exceptions
         }
     }
 
-    public class CustomerDoesNotExistException : SystemException
+    public class CustomerDoesNotExistException : Exception
     {
         public CustomerDoesNotExistException(String m) : base(m)
         {
@@ -60,14 +60,14 @@ namespace Pecunia.Exceptions
         }
     }
 
-    public class EnterValidAccountTypeException : SystemException
+    public class EnterValidAccountTypeException : Exception
     {
         public EnterValidAccountTypeException(String m) : base(m)
         {
 
         }
     }
-    public class AccountDoesNotExistException : SystemException
+    public class AccountDoesNotExistException : Exception
     {
         public AccountDoesNotExistException(String m) : base(m)
         {
