@@ -48,5 +48,19 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pecunia.BusinessLayer\Pecunia.BusinessLayer.csproj">
+      <Project>{d3ca5e1a-2d48-4d88-906c-dc2da09ea5f0}</Project>
+      <Name>Pecunia.BusinessLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Pecunia.Entities\Pecunia.Entities.csproj">
+      <Project>{ccb8bed5-565e-438f-9415-46a1b75aae20}</Project>
+      <Name>Pecunia.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Pecunia.Exceptions\Pecunia.Exceptions.csproj">
+      <Project>{faa9b1fd-bb7d-4f4e-bc83-3a19d65f718d}</Project>
+      <Name>Pecunia.Exceptions</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
