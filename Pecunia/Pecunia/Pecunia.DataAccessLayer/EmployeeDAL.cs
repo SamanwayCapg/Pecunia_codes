@@ -25,7 +25,7 @@ namespace Pecunia.DataAccessLayer
                 employeeList.Add(newEmployee);
                 employeeAdded = true;
             }
-            catch (SystemException ex)
+            catch (Exception ex)
             {
                 throw new PecuniaException(ex.Message);
             }
@@ -51,7 +51,7 @@ namespace Pecunia.DataAccessLayer
                     }
                 }
             }
-            catch (SystemException ex)
+            catch (Exception ex)
             {
                 throw new PecuniaException(ex.Message);
             }
@@ -71,7 +71,7 @@ namespace Pecunia.DataAccessLayer
                     }
                 }
             }
-            catch (SystemException ex)
+            catch (Exception ex)
             {
                 throw new PecuniaException(ex.Message);
             }
@@ -96,7 +96,7 @@ namespace Pecunia.DataAccessLayer
                     }
                 }
             }
-            catch (SystemException ex)
+            catch (Exception ex)
             {
                 throw new PecuniaException(ex.Message);
             }
