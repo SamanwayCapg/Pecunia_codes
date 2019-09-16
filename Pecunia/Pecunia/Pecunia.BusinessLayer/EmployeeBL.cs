@@ -10,9 +10,20 @@ using System.Text.RegularExpressions;
 
 namespace Pecunia.BusinessLayer
 {
-    public class EmployeeBL
+    public interface IEmployeeBL
     {
-        public static bool EmployeeLogInBL(Employee employee)
+        bool EmployeeLogInBL(Employee employee);
+        bool ValidateEmployee(Employee employee);
+        bool AddEmployeeBL(Employee newEmployee);
+        List<Employee> GetAllEmployeesBL();
+        Employee SearchEmployeeBL(string searchEmployeeID);
+        List<Employee> GetEmployeesByNameBL(string employeeName);
+        bool UpdateEmployeeBL(Employee updateEmployee);
+        bool DeleteEmployeeBL(string deleteEmployeeID);
+    }
+    public class EmployeeBL : IEmployeeBL
+    {
+        public bool EmployeeLogInBL(Employee employee)
         {
             bool employeeLoggedIn = false;
             try
@@ -29,7 +40,7 @@ namespace Pecunia.BusinessLayer
             return employeeLoggedIn;
         }
 
-        private static bool ValidateEmployee(Employee employee)
+        public bool ValidateEmployee(Employee employee)
         {
             StringBuilder sb = new StringBuilder();
             bool validEmployee = true;
@@ -82,7 +93,7 @@ namespace Pecunia.BusinessLayer
         }
 
 
-        public static bool AddEmployeeBL(Employee newEmployee)
+        public bool AddEmployeeBL(Employee newEmployee)
         {
             bool employeeAdded = false;
             try
@@ -105,7 +116,7 @@ namespace Pecunia.BusinessLayer
             return employeeAdded;
         }
 
-        public static List<Employee> GetAllEmployeesBL()
+        public List<Employee> GetAllEmployeesBL()
         {
             List<Employee> employeeList = null;
             try
@@ -124,7 +135,7 @@ namespace Pecunia.BusinessLayer
             return employeeList;
         }
 
-        public static Employee SearchEmployeeBL(string searchEmployeeID)
+        public Employee SearchEmployeeBL(string searchEmployeeID)
         {
             Employee searchEmployee = null;
             try
@@ -144,7 +155,23 @@ namespace Pecunia.BusinessLayer
 
         }
 
-        public static bool UpdateEmployeeBL(Employee updateEmployee)
+        public List<Employee> GetEmployeesByNameBL(string employeeName)
+        {
+            List<Employee> searchEmployee = new List<Employee>();
+            try
+            {
+                EmployeeDAL employeeDAL = new EmployeeDAL();
+                searchEmployee = employeeDAL.GetEmployeesByNameDAL(employeeName);
+            }
+            catch (Exception ex)
+            {
+
+                throw new PecuniaException(ex.Message);
+            }
+            return searchEmployee;
+        }
+
+        public bool UpdateEmployeeBL(Employee updateEmployee)
         {
             bool employeeUpdated = false;
             try
@@ -167,7 +194,7 @@ namespace Pecunia.BusinessLayer
             return employeeUpdated;
         }
 
-        public static bool DeleteEmployeeBL(string deleteEmployeeID)
+        public bool DeleteEmployeeBL(string deleteEmployeeID)
         {
             bool employeeDeleted = false;
             try

@@ -19,12 +19,12 @@ namespace Pecunia.Entities
     {
        //properties of Employee
         public string EmployeeID { get; set; }
-        public string EmployeeName { get; set; }    
+        public string EmployeeName { get; set; }
         public string EmployeeCode { get; set; }
         public string EmployeeEmail { get; set; }
         public string EmployeePassword { get; set; }
         public string EmployeeMobile { get; set; }
-     
+
         //Employee Constructor
         public Employee()
         {
