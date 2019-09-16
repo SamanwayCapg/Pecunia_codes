@@ -6,69 +6,34 @@ using System.Threading.Tasks;
 
 namespace Pecunia.Entities
 {
-    public class Employee
+    public interface IEmployee
     {
-        private string employeeID;
-
-        public string EmployeeID
-        {
-            get { return employeeID; }
-            set { employeeID = value; }
-        }
-
-        private string employeeName;
-
-        public string EmployeeName
-        {
-            get { return employeeName; }
-            set { employeeName = value; }
-        }
-
-        private string employeeCode;
-        public string EmployeeCode
-        {
-            get { return employeeCode; }
-            set { employeeCode = value; }
-        }
-
-
-        private string employeeEmail;
-
-        public string EmployeeEmail
-        {
-            get { return employeeEmail; }
-            set
-            {
-                employeeEmail = value;
-            }
-        }
-
-        private string employeePassword;
-        public string EmployeePassword
-        {
-            get { return employeePassword; }
-            set { employeePassword = value; }
-        }
-
-        private string employeeMobile;
-        public string EmployeeMobile
-        {
-            get { return employeeMobile; }
-            set
-            {
-                employeeMobile = value;
-            }
-        }
-
-
+         string EmployeeID { get; set; }
+         string EmployeeName { get; set; }
+         string EmployeeCode { get; set; }
+         string EmployeeEmail { get; set; }
+         string EmployeePassword { get; set; }
+         string EmployeeMobile { get; set; }
+    }
+    public class Employee:IEmployee
+    {
+       //properties of Employee
+        public string EmployeeID { get; set; }
+        public string EmployeeName { get; set; }    
+        public string EmployeeCode { get; set; }
+        public string EmployeeEmail { get; set; }
+        public string EmployeePassword { get; set; }
+        public string EmployeeMobile { get; set; }
+     
+        //Employee Constructor
         public Employee()
         {
-            employeeID = 0;
-            employeeName = string.Empty;
-            employeeCode = string.Empty;
-            employeeEmail = string.Empty;
-            employeePassword = string.Empty;
-            employeeMobile = string.Empty;
+            EmployeeID = string.Empty;
+            EmployeeName = string.Empty;
+            EmployeeCode = string.Empty;
+            EmployeeEmail = string.Empty;
+            EmployeePassword = string.Empty;
+            EmployeeMobile = string.Empty;
 
         }
     }
