@@ -36,21 +36,24 @@ namespace Pecunia.PresentationLayer
                                 SearchEmployee();
                                 break;
                             case 4:
-                                UpdateEmployee();
+                                GetEmployeesByName();
                                 break;
                             case 5:
-                                DeleteEmployee();
+                                UpdateEmployee();
                                 break;
                             case 6:
-                                ViewCustomerDetails();
+                                DeleteEmployee();
                                 break;
                             case 7:
-                                ApproveLoan();
+                                ViewCustomerDetails();
                                 break;
                             case 8:
-                                ViewTransactionReport();
+                                ApproveLoan();
                                 break;
                             case 9:
+                                ViewTransactionReport();
+                                break;
+                            case 10:
                                 return;
                             default:
                                 Console.WriteLine("Invalid Choice");
@@ -109,10 +112,10 @@ namespace Pecunia.PresentationLayer
                 else
                     Console.WriteLine("Admin not Logged In");
             }
-            catch (PecuniaException ex)
+            catch (PecuniaException)
             {
 
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("Cannot Login");
             }
         }
 
@@ -135,10 +138,10 @@ namespace Pecunia.PresentationLayer
                 else
                     Console.WriteLine("Employee not Logged In");
             }
-            catch (PecuniaException ex)
+            catch (PecuniaException)
             {
 
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("Cannot Login");
             }
         }
 
@@ -174,6 +177,175 @@ namespace Pecunia.PresentationLayer
             try
             {
                 List<IEmployee> employeeList = EmployeeBL.GetAllEmployeesBL();
+            }
+            catch (PecuniaException)
+            {
+
+                Console.WriteLine("Employee List cannot be shown");
+            }
+        }
+
+        private static void SearchEmployee()
+        {
+            try
+            {
+                string searchEmployeeID;
+                Console.WriteLine("Enter Employee ID to Search:");
+                searchEmployeeID = Console.ReadLine();
+                Employee searchEmployee = EmployeeBL.SearchEmployeeBL(searchEmployeeID);
+                if (searchEmployee != null)
+                {
+                    Console.WriteLine("******************************************************************************");
+                    Console.WriteLine("EmployeeID\t\tName\t\tEmail\t\tMobile");
+                    Console.WriteLine("******************************************************************************");
+                    Console.WriteLine("{0}\t\t{1}\t\t{2}\t\t{3}", searchEmployee.EmployeeID, searchEmployee.EmployeeName, searchEmployee.EmployeeEmail, searchEmployee.EmployeeMobile);
+                    Console.WriteLine("******************************************************************************");
+                }
+                else
+                {
+                    Console.WriteLine("No Employee Details Available");
+                }
+            }
+            catch (PecuniaException)
+            {
+
+                Console.WriteLine("Employee details cannot be shown");
+            }
+        }
+
+        private static void GetEmployeesByName()
+        {
+            List<Employee> employeeList = new List<Employee>();
+            try
+            {
+                string searchEmployeeName;
+                Console.WriteLine("Enter Employee Name to search");
+                searchEmployeeName = Console.ReadLine();
+                employeeList = EmployeeBL.GetEmployeesByNameBL(searchEmployeeName);
+                foreach(Employee item in employeeList)
+                {
+                    Console.WriteLine("******************************************************************************");
+                    Console.WriteLine("EmployeeID\t\tName\t\tEmail\t\tMobile");
+                    Console.WriteLine("******************************************************************************");
+                    Console.WriteLine("{0}\t\t{1}\t\t{2}\t\t{3}",item.EmployeeID,item.EmployeeName, item.EmployeeEmail, item.EmployeeMobile);
+                    Console.WriteLine("******************************************************************************");
+                }
+            }
+            catch (PecuniaException)
+            {
+
+                Console.WriteLine("Employee list cannot be shown");
+            }            
+        }
+
+        private static void UpdateEmployee()
+        {
+            try
+            {
+                string updateEmployeeID;
+                Console.WriteLine("Enter EmployeeID to Update Details:");
+                updateEmployeeID = Console.ReadLine();
+                Employee updatedEmployee = EmployeeBL.UpdateEmployeeBL(updateEmployeeID);
+                if (updatedEmployee != null)
+                {
+                    Console.WriteLine("Update Employee Name :");
+                    updatedEmployee.EmployeeName = Console.ReadLine();
+                    Console.WriteLine("Update Email :");
+                    updatedEmployee.EmployeeEmail = Console.ReadLine();
+                    Console.WriteLine("Update Password : ");
+                    updatedEmployee.EmployeePassword = Console.ReadLine();
+                    Console.WriteLine("Update Mobile");
+                    updatedEmployee.EmployeeMobile = Console.ReadLine();
+                    bool employeeUpdated = EmployeeBL.UpdateEmployeeBL(updatedEmployee);
+                    if (employeeUpdated)
+                        Console.WriteLine("Employee Details Updated");
+                    else
+                        Console.WriteLine("Employee Details not Updated ");
+                }
+                else
+                {
+                    Console.WriteLine("No Employee Details Available");
+                }
+            }
+            catch (PecuniaException)
+            {
+                Console.WriteLine("Employee Details cannot be updated");
+            }           
+        }
+
+        private static void DeleteEmployee()
+        {
+            try
+            {
+                string deleteEmployeeID;
+                Console.WriteLine("Enter Employee ID to delete:");
+                deleteEmployeeID = Console.ReadLine();
+                Employee deleteEmployee = EmployeeBL.SearchEmployeeBL(deleteEmployeeID);
+                if (deleteEmployee != null)
+                {
+                    bool employeeDeleted = EmployeeBL.DeleteEmployeeBL(deleteEmployeeID);
+                    if (employeeDeleted)
+                        Console.WriteLine("Employee Deleted");
+                    else
+                        Console.WriteLine("Employee not Deleted ");
+                }
+                else
+                {
+                    Console.WriteLine("No Employee Details Available");
+                }
+            }
+            catch (PecuniaException)
+            {
+                Console.WriteLine("Employee could not be deleted");
+            }
+        }
+
+        private static void ViewCustomerDetails()
+        {
+            try
+            {
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        private static void ApproveLoan()
+        {
+            try
+            {
+                string loanID;
+                Console.WriteLine("Enter LoanID to Approve");
+                loanID = Console.ReadLine();
+                if (loanID.Contains("EDU"))
+                {
+                    EduLoan eduLoan = new EduLoan();
+                    
+                }
+                if (loanID.Contains("HOME"))
+                {
+
+                }
+                if (loanID.Contains("CAR"))
+                {
+
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        private static void ViewTransactionReport()
+        {
+            try
+            {
+
             }
             catch (Exception)
             {

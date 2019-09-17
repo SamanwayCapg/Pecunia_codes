@@ -15,6 +15,7 @@ namespace Pecunia.Entities
          string EmployeePassword { get; set; }
          string EmployeeMobile { get; set; }
     }
+    [Serializable]
     public class Employee:IEmployee
     {
        //properties of Employee

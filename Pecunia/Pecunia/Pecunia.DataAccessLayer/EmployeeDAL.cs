@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Pecunia.Entities;
 using Pecunia.Exceptions;
 using System.Data.Common;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace Pecunia.DataAccessLayer
 {
@@ -20,6 +22,7 @@ namespace Pecunia.DataAccessLayer
         bool UpdateEmployeeDAL(Employee updateEmployee);
         bool DeleteEmployeeDAL(string deleteEmployeeID);
     }
+    [Serializable]
     public class EmployeeDAL : IEmployeeDAL
     {        
        public List<Employee> EmployeeList { get; set; }
@@ -37,10 +40,9 @@ namespace Pecunia.DataAccessLayer
                     }
                 }                
             }
-            catch (Exception)
+            catch (PecuniaException)
             {
-
-                throw new PecuniaException("Cannot Login");
+                throw;
             }
             return employeeLogin;
         }
@@ -58,10 +60,12 @@ namespace Pecunia.DataAccessLayer
             {
                 EmployeeList.Add(newEmployee);          //adding new employee to the list
                 employeeAdded = true;
+                string fileName = "EmployeeData.txt";
+                SerializeIntoJSON(EmployeeList, fileName);
             }
-            catch (Exception ex)
+            catch (PecuniaException)
             {
-                throw new PecuniaException(ex.Message);
+                throw;
             }
             return employeeAdded;
 
@@ -69,6 +73,8 @@ namespace Pecunia.DataAccessLayer
 
         public List<Employee> GetAllEmployeesDAL()
         {
+            string fileName = "EmployeeData.txt";
+            DeserializeFromJSON(fileName);
             return EmployeeList;
         }
 
@@ -85,9 +91,9 @@ namespace Pecunia.DataAccessLayer
                     }
                 }
             }
-            catch (Exception ex)
+            catch (PecuniaException)
             {
-                throw new PecuniaException(ex.Message);
+                throw;
             }
             return searchEmployee;
         }
@@ -105,9 +111,9 @@ namespace Pecunia.DataAccessLayer
                     }
                 }
             }
-            catch (Exception ex)
+            catch (PecuniaException)
             {
-                throw new PecuniaException(ex.Message);
+                throw;
             }
             return searchEmployee;
         }
@@ -130,9 +136,9 @@ namespace Pecunia.DataAccessLayer
                     }
                 }
             }
-            catch (Exception ex)
+            catch (PecuniaException)
             {
-                throw new PecuniaException(ex.Message);
+                throw;
             }
             return employeeUpdated;
 
@@ -158,12 +164,33 @@ namespace Pecunia.DataAccessLayer
                     employeeDeleted = true;
                 }
             }
-            catch (Exception ex)
+            catch (PecuniaException)
             {
-                throw new PecuniaException(ex.Message);
+                throw;
             }
             return employeeDeleted;
+        }
 
+        public bool SerializeIntoJSON(List<Employee> EmployeeList, string fileName)
+        {            
+            JsonSerializer jsonSerializer = new JsonSerializer();
+            using (StreamWriter streamWriter = new StreamWriter(fileName))   //filename is used so that we can have access over our own file
+            using (JsonWriter jsonWriter = new JsonTextWriter(streamWriter))
+            {
+                jsonSerializer.Serialize(jsonWriter, EmployeeList); // Serialize Employee data in EmployeeData.txt
+                return true;
+            }                   
+        }
+
+        public List<Employee> DeserializeFromJSON(string fileName)
+        {
+            List<Employee> EmployeeList = JsonConvert.DeserializeObject<List<Employee>>(File.ReadAllText(fileName));// Done to read data from file
+            using (StreamReader streamReader = File.OpenText(fileName))
+            {
+                JsonSerializer jsonSerializer = new JsonSerializer();
+                List<Employee> readEmployeeList = (List<Employee>)jsonSerializer.Deserialize(streamReader, typeof(List<Employee>));
+                return readEmployeeList;
+            }
         }
 
     }

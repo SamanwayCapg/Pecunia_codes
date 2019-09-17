@@ -31,10 +31,10 @@ namespace Pecunia.BusinessLayer
                 EmployeeDAL employeeDAL = new EmployeeDAL();
                 employeeLoggedIn = employeeDAL.EmployeeLogInDAL(employee);
             }
-            catch (Exception ex)
+            catch (PecuniaException)
             {
 
-                throw new PecuniaException(ex.Message);
+                throw;
             }
 
             return employeeLoggedIn;
@@ -106,11 +106,8 @@ namespace Pecunia.BusinessLayer
             }
             catch (PecuniaException)
             {
+
                 throw;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
 
             return employeeAdded;
@@ -124,13 +121,10 @@ namespace Pecunia.BusinessLayer
                 EmployeeDAL employeeDAL = new EmployeeDAL();        //calling DAL class method to list employees
                 employeeList = employeeDAL.GetAllEmployeesDAL();
             }
-            catch (PecuniaException ex)
+            catch (PecuniaException)
             {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+
+                throw;
             }
             return employeeList;
         }
@@ -143,13 +137,9 @@ namespace Pecunia.BusinessLayer
                 EmployeeDAL employeeDAL = new EmployeeDAL();    //calling DAL class method to search employees
                 searchEmployee = employeeDAL.SearchEmployeeDAL(searchEmployeeID);
             }
-            catch (PecuniaException ex)
+            catch (PecuniaException)
             {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                throw;
             }
             return searchEmployee;
 
@@ -163,10 +153,9 @@ namespace Pecunia.BusinessLayer
                 EmployeeDAL employeeDAL = new EmployeeDAL();
                 searchEmployee = employeeDAL.GetEmployeesByNameDAL(employeeName);
             }
-            catch (Exception ex)
+            catch (PecuniaException)
             {
-
-                throw new PecuniaException(ex.Message);
+                throw;
             }
             return searchEmployee;
         }
@@ -186,10 +175,6 @@ namespace Pecunia.BusinessLayer
             {
                 throw;
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
 
             return employeeUpdated;
         }
@@ -204,18 +189,10 @@ namespace Pecunia.BusinessLayer
                     EmployeeDAL employeeDAL = new EmployeeDAL();
                     employeeDeleted = employeeDAL.DeleteEmployeeDAL(deleteEmployeeID);   //if matched, the employee is deleted by calling DAL class method
                 }
-                else
-                {
-                    throw new PecuniaException("Invalid Employee ID");
-                }
             }
             catch (PecuniaException)
             {
                 throw;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
 
             return employeeDeleted;
