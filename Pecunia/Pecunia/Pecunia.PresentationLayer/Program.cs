@@ -146,16 +146,34 @@ namespace Pecunia.PresentationLayer
         {
             try
             {
-                Employee employee = new Employee();
+                Employee newEmployee = new Employee();
                 Console.WriteLine("Enter Employee Name");
-                employee.EmployeeName = Console.ReadLine();
+                newEmployee.EmployeeName = Console.ReadLine();
                 Console.WriteLine("Enter Employee Email");
-                employee.EmployeeEmail = Console.ReadLine();
+                newEmployee.EmployeeEmail = Console.ReadLine();
                 Console.WriteLine("Enter Employee Password");
-                employee.EmployeePassword = Console.ReadLine();
+                newEmployee.EmployeePassword = Console.ReadLine();
                 Console.WriteLine("Enter Employee Mobile");
-                employee.EmployeeMobile = Console.ReadLine();
+                newEmployee.EmployeeMobile = Console.ReadLine();
 
+                bool employeeAdded = EmployeeBL.AddEmployeeBL(newEmployee);
+                if (employeeAdded)
+                    Console.WriteLine("Employee Added");
+                else
+                    Console.WriteLine("Employee not Added");
+
+            }
+            catch (PecuniaException)
+            {
+                Console.WriteLine("Employee cannot be added");
+            }
+        }
+
+        private static void GetAllEmployees()
+        {
+            try
+            {
+                List<IEmployee> employeeList = EmployeeBL.GetAllEmployeesBL();
             }
             catch (Exception)
             {

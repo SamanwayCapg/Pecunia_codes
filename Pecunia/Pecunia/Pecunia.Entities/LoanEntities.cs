@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Pecunia.Entities
 {
@@ -14,31 +10,71 @@ namespace Pecunia.Entities
     {
         APPLIED, PROCESSING, REJECTED, APPROVED
     }
-    public class LoanEntities
-    {
-        private string _loanID;
-        private string _customerID;
-        private double _income;
-        private double _amountApplied;
-        private double _interestRate;
-        private double _EMI;//
-        private int _tenure;
-        private DateTime _dateOfApplication;
-        private LoanType _type;
-        private LoanStatus _status;
-        
-        
 
-        ////////////////////////////////// properties/////////////////////////
-        public string LoanID { get => _loanID; set => _loanID = value; }
-        public string CustomerID { get => _customerID; set => _customerID = value; }
-        public double Income { get => _income; set => _income = value; }
-        public double AmountApplied { get => _amountApplied; set => _amountApplied = value; }
-        public double InterestRate { get => _interestRate; set => _interestRate = value; }
-        public double EMI { get => _EMI; set => _EMI = value; }
-        public int Tenure { get => _tenure; set => _tenure = value; }
-        public DateTime DateOfApplication { get => _dateOfApplication; set => _dateOfApplication = value; }
-        public LoanStatus Status { get => _status; set => _status = value; }
-        public LoanType Type { get => _type; set => _type = value; }
+    public enum ServiceType
+    {
+        AGRICULTURE, BUSINESS, OTHERS, RETIRED, SELF_EMPLOYED, SERVICE
+    }
+
+    public enum VehicleType
+    {
+        TWO_WHEELER, FOUR_WHEELER, MULTI_AXLE
+    }
+
+    public enum CourseType
+    {
+        UNDERGRADUATE, MASTERS, PHD, M_PHIL 
+    }
+    public interface ILoanEntities
+    {
+        string LoanID { get; set; }
+        string CustomerID { get; set; }
+        double AmountApplied { get; set; }
+        double InterestRate { get; set; }
+        double EMI_Amount { get; set; }
+        int RepaymentPeriod { get; set; }
+        DateTime DateOfApplication { get; set; }
+        LoanStatus Status { get; set; }
+        
+    }
+
+    public abstract class LoanEntities : ILoanEntities
+    {
+        public string LoanID { get; set; }
+        public string CustomerID { get; set; }
+        public double AmountApplied { get; set; }
+        public double InterestRate { get; set; }
+        public double EMI_Amount { get; set; }
+        public int RepaymentPeriod { get; set; }
+        public DateTime DateOfApplication { get; set; }
+        public LoanStatus Status { get; set; }
+        
+    }
+
+    public class HomeLoan : LoanEntities
+    {
+        public ServiceType Occupation { get; set; }
+        public int ServiceYears { get; set; }
+        public double GrossIncome { get; set; }
+        public double SalaryDeductions { get; set; }
+
+        
+    }
+
+    public class EduLoan : LoanEntities
+    {
+        public CourseType Course { get; set; }
+        public int CourseDuration {get; set;}
+        public string InstituteName { get; set; }
+        public string StudentID { get; set; }
+        public int RepaymentHoliday { get; set; }
+    }
+
+    public class CarLoan : LoanEntities
+    {
+        public ServiceType Occupation { get; set; }
+        public double GrossIncome { get; set; }
+        public double SalaryDeductions { get; set; }
+        public VehicleType Vehicle { get; set; }
     }
 }

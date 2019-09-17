@@ -7,6 +7,116 @@ using Pecunia.Entities;
 
 namespace Pecunia.DataAccessLayer
 {
+    public interface ILoanDAL
+    {
+        bool ApplyLoanDAL<T>(T obj);
+        T GetLoanStatusDAL<T>(string loanID);
+        T GetLoanByCustomerID_DAL<T>(string customerID);
+        T ApproveLoanDAL<T>(string loanID);
+        T GetLoanByLoanID_DAL<T>(string loanID);
+        
+    }
+
+    public class CarLoanDAL : ILoanDAL
+    {
+        public static List<CarLoan> CarLoans;
+        public bool ApplyLoanDAL<CarLoan>(CarLoan obj)
+        {
+            return SerializeIntoJSON(obj, "CarLoans.txt");
+        }
+
+        public CarLoan ApproveLoanDAL<CarLoan>(string loanID)
+        {
+            CarLoan loan = GetLoanByLoanID_DAL<CarLoan>(loanID);
+
+        }
+
+        public CarLoan GetLoanByCustomerID_DAL<CarLoan>(string customerID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public CarLoan GetLoanByLoanID_DAL<CarLoan>(string loanID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public CarLoan GetLoanStatusDAL<CarLoan>(string loanID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool SerializeIntoJSON(CarLoan obj, string filename)
+        {
+            return true;
+        }
+
+        public List<CarLoan> DeserializeFromJSON(string filename)
+        {
+            return CarLoans;
+        }
+    }
+
+    public class HomeLoanDAL : ILoanDAL
+    {
+        public static List<HomeLoan> HomeLoans;
+
+        public bool ApplyLoanDAL<HomeLoan>(HomeLoan obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public HomeLoan ApproveLoanDAL<HomeLoan>(string loanID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public HomeLoan GetLoanByCustomerID_DAL<HomeLoan>(string customerID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public HomeLoan GetLoanByLoanID_DAL<HomeLoan>(string loanID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public HomeLoan GetLoanStatusDAL<HomeLoan>(string loanID)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class EduLoanDAL : ILoanDAL
+    {
+        public static List<EduLoan> EduLoans;
+
+        public bool ApplyLoanDAL<T>(T obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public EduLoan ApproveLoanDAL<EduLoan>(string loanID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public EduLoan GetLoanByCustomerID_DAL<EduLoan>(string customerID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T GetLoanByLoanID_DAL<T>(string loanID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public EduLoan GetLoanStatusDAL<EduLoan>(string loanID)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    /*
     public class LoanDAL
     {
         static List<LoanEntities> Loans = new List<LoanEntities>();
@@ -135,5 +245,6 @@ namespace Pecunia.DataAccessLayer
                 
         }
     }
+    */
 }
                    
