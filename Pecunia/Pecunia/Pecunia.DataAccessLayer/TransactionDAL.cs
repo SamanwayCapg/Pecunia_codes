@@ -7,15 +7,32 @@ using Pecunia.Entities;
 using Pecunia.DataAccessLayer;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace Pecunia.DataAccessLayer
 {
-    public class TransactionDAL
+    public abstract class TransactionDALAbstract
+    {
+        public abstract void StoreTransaction(long accountNo, double Amount, TypeOfTranscation type, string mode, string chequeNo);
+        public abstract bool DebitTransactionByWithdrawalSlipDAL(long AccountNo, double Amount);
+        public abstract bool CreditTransactionByWithdrawalSlipDAL(long AccountNo, double Amount);
+        public abstract bool DebitTransactionByChequeDAL(long AccountNo, double Amount, string ChequeNo);
+        public abstract bool CreditTransactionByChequeDAL(long AccountNo, double Amount, string ChequeNo);
+        public abstract TransactionEntities DisplayTransactionByCustomerID_DAL(string CustomerID);
+        public abstract TransactionEntities DisplayTransactionByAccountNo_DAL(long AccountNo);
+        public abstract TransactionEntities DisplayTransactionDetailsByTransactionID_DAL(string TransactionID);
+        public abstract void Serialize();
+        public abstract void DeSerialize();
+
+    }
+    [Serializable]
+    public class TransactionDAL: TransactionDALAbstract
     {
         
         public static List<TransactionEntities> Transactions = new List<TransactionEntities>() { };
-
-        public void StoreTransaction(long accountNo, double Amount, TypeOfTranscation type, string mode, string chequeNo)
+        public List<TransactionEntities> TransactionsToSerialize = new List<TransactionEntities>() { };
+        private string filepath = "transactions.dat";
+        public override void StoreTransaction(long accountNo, double Amount, TypeOfTranscation type, string mode, string chequeNo)
         {
             //// retrieving customerID based on account No
             string customerID = "00000000000000";// dummy initialization to avoid warnings
@@ -41,7 +58,7 @@ namespace Pecunia.DataAccessLayer
             Transactions.Add(trans);
         }
 
-        public bool DebitTransactionByWithdrawalSlipDAL(long AccountNo, double Amount)
+        public override bool DebitTransactionByWithdrawalSlipDAL(long AccountNo, double Amount)
         {
             bool res = false;
             foreach (Account acc in AccountDAL.ListOfAccounts)
@@ -70,7 +87,7 @@ namespace Pecunia.DataAccessLayer
             }
         }
 
-        public bool CreditTransactionByWithdrawalSlipDAL(long AccountNo, double Amount)
+        public override bool CreditTransactionByWithdrawalSlipDAL(long AccountNo, double Amount)
         {
             bool res = false;
             foreach (Account acc in AccountDAL.ListOfAccounts)
@@ -98,7 +115,7 @@ namespace Pecunia.DataAccessLayer
             }
         }
 
-        public bool DebitTransactionByChequeDAL(long AccountNo, double Amount, string ChequeNo)
+        public override bool DebitTransactionByChequeDAL(long AccountNo, double Amount, string ChequeNo)
         {
             bool res = false;
             foreach (Account acc in AccountDAL.ListOfAccounts)
@@ -126,7 +143,7 @@ namespace Pecunia.DataAccessLayer
             }
         }
 
-        public bool CreditTransactionByChequeDAL(long AccountNo, double Amount, string ChequeNo)
+        public override bool CreditTransactionByChequeDAL(long AccountNo, double Amount, string ChequeNo)
         {
             
             bool res = false;
@@ -155,7 +172,7 @@ namespace Pecunia.DataAccessLayer
             }
         }
 
-        public TransactionEntities DisplayTransactionByCustomerID_DAL(string CustomerID)
+        public override TransactionEntities DisplayTransactionByCustomerID_DAL(string CustomerID)
         {
             foreach (TransactionEntities trans in Transactions)
             {
@@ -167,7 +184,7 @@ namespace Pecunia.DataAccessLayer
             return null;
         }
 
-        public TransactionEntities DisplayTransactionByAccountNo_DAL(long AccountNo)
+        public override TransactionEntities DisplayTransactionByAccountNo_DAL(long AccountNo)
         {
             foreach (TransactionEntities trans in Transactions)
             {
@@ -180,7 +197,7 @@ namespace Pecunia.DataAccessLayer
             return null;
         }
 
-        public TransactionEntities DisplayTransactionDetailsByTransactionID_DAL(string TransactionID)
+        public override TransactionEntities DisplayTransactionDetailsByTransactionID_DAL(string TransactionID)
         {
             foreach (TransactionEntities trans in Transactions)
             {
@@ -201,6 +218,21 @@ namespace Pecunia.DataAccessLayer
             }
             return null;
 
+        }
+        public override void Serialize()
+        {
+            this.TransactionsToSerialize = Transactions;
+            FileStream fs1 = new FileStream(filepath, FileMode.Create, FileAccess.Write);
+            BinaryFormatter binaryformatter = new BinaryFormatter();
+            binaryformatter.Serialize(fs1, this);
+            fs1.Close();
+        }
+        public override void DeSerialize()
+        {
+            
+            FileStream fs2 = new FileStream(filepath, FileMode.Open, FileAccess.Read);
+            BinaryFormatter binaryformatter = new BinaryFormatter();
+            TransactionDAL transactionDal = (TransactionDAL)binaryformatter.Deserialize(fs2);
         }
 
     }

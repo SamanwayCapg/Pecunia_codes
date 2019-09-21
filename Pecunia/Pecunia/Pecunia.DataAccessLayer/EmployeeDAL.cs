@@ -6,19 +6,33 @@ using System.Threading.Tasks;
 using Pecunia.Entities;
 using Pecunia.Exceptions;
 using System.Data.Common;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace Pecunia.DataAccessLayer
 {
-    public class EmployeeDAL
+    public interface IEmployeeDAL
     {
-        public static List<Employee> employeeList = new List<Employee>();
-
+        List<Employee> EmployeeList { get; set; }
+        bool EmployeeLogInDAL(Employee employee);
+        bool AddEmployeeDAL(Employee newEmployee);
+        List<Employee> GetAllEmployeesDAL();
+        Employee SearchEmployeeDAL(string searchEmployeeID);
+        List<Employee> GetEmployeesByNameDAL(string employeeName);
+        bool UpdateEmployeeDAL(Employee updateEmployee);
+        bool DeleteEmployeeDAL(string deleteEmployeeID);
+    }
+    [Serializable]
+    public class EmployeeDAL : IEmployeeDAL
+    {        
+       public List<Employee> EmployeeList { get; set; }
+                  
         public bool EmployeeLogInDAL(Employee employee)
         {
             bool employeeLogin = false;
             try
             {
-                foreach(Employee emp in employeeList)
+                foreach(Employee emp in EmployeeList)
                 {
                     if (employee.EmployeeID == emp.EmployeeID && employee.EmployeeCode == emp.EmployeeCode && employee.EmployeePassword == emp.EmployeePassword)
                     {
@@ -26,10 +40,9 @@ namespace Pecunia.DataAccessLayer
                     }
                 }                
             }
-            catch (Exception)
+            catch (PecuniaException)
             {
-
-                throw new PecuniaException("Cannot Login");
+                throw;
             }
             return employeeLogin;
         }
@@ -45,12 +58,14 @@ namespace Pecunia.DataAccessLayer
             bool employeeAdded = false;
             try
             {
-                employeeList.Add(newEmployee);          //adding new employee to the list
+                EmployeeList.Add(newEmployee);          //adding new employee to the list
                 employeeAdded = true;
+                string fileName = "EmployeeData.txt";
+                SerializeIntoJSON(EmployeeList, fileName);
             }
-            catch (Exception ex)
+            catch (PecuniaException)
             {
-                throw new PecuniaException(ex.Message);
+                throw;
             }
             return employeeAdded;
 
@@ -58,7 +73,9 @@ namespace Pecunia.DataAccessLayer
 
         public List<Employee> GetAllEmployeesDAL()
         {
-            return employeeList;
+            string fileName = "EmployeeData.txt";
+            DeserializeFromJSON(fileName);
+            return EmployeeList;
         }
 
         public Employee SearchEmployeeDAL(string searchEmployeeID)
@@ -66,7 +83,7 @@ namespace Pecunia.DataAccessLayer
             Employee searchEmployee = null;
             try
             {
-                foreach (Employee item in employeeList)             //searching employee through employeeID in list
+                foreach (Employee item in EmployeeList)             //searching employee through employeeID in list
                 {
                     if (item.EmployeeID == searchEmployeeID)
                     {
@@ -74,9 +91,9 @@ namespace Pecunia.DataAccessLayer
                     }
                 }
             }
-            catch (Exception ex)
+            catch (PecuniaException)
             {
-                throw new PecuniaException(ex.Message);
+                throw;
             }
             return searchEmployee;
         }
@@ -86,7 +103,7 @@ namespace Pecunia.DataAccessLayer
             List<Employee> searchEmployee = new List<Employee>();
             try
             {
-                foreach (Employee item in employeeList)
+                foreach (Employee item in EmployeeList)
                 {
                     if (item.EmployeeName == employeeName)              //searching employee by employee name in list
                     {
@@ -94,9 +111,9 @@ namespace Pecunia.DataAccessLayer
                     }
                 }
             }
-            catch (Exception ex)
+            catch (PecuniaException)
             {
-                throw new PecuniaException(ex.Message);
+                throw;
             }
             return searchEmployee;
         }
@@ -106,22 +123,22 @@ namespace Pecunia.DataAccessLayer
             bool employeeUpdated = false;
             try
             {
-                for (int i = 0; i < employeeList.Count; i++)
+                for (int i = 0; i < EmployeeList.Count; i++)
                 {
-                    if (employeeList[i].EmployeeID == updateEmployee.EmployeeID)               //matching employeeID in list with user provided employeeID
+                    if (EmployeeList[i].EmployeeID == updateEmployee.EmployeeID)               //matching employeeID in list with user provided employeeID
                     {
-                        updateEmployee.EmployeeName = employeeList[i].EmployeeName;            //updating  employee name
-                        updateEmployee.EmployeeEmail = employeeList[i].EmployeeEmail;          //updating  employee email
-                        updateEmployee.EmployeePassword = employeeList[i].EmployeePassword;    //updating  employee password
-                        updateEmployee.EmployeeMobile = employeeList[i].EmployeeMobile;        //updating  employee mobile
+                        updateEmployee.EmployeeName = EmployeeList[i].EmployeeName;            //updating  employee name
+                        updateEmployee.EmployeeEmail = EmployeeList[i].EmployeeEmail;          //updating  employee email
+                        updateEmployee.EmployeePassword = EmployeeList[i].EmployeePassword;    //updating  employee password
+                        updateEmployee.EmployeeMobile = EmployeeList[i].EmployeeMobile;        //updating  employee mobile
 
                         employeeUpdated = true;
                     }
                 }
             }
-            catch (Exception ex)
+            catch (PecuniaException)
             {
-                throw new PecuniaException(ex.Message);
+                throw;
             }
             return employeeUpdated;
 
@@ -133,7 +150,7 @@ namespace Pecunia.DataAccessLayer
             try
             {
                 Employee deleteEmployee = null;
-                foreach (Employee item in employeeList)
+                foreach (Employee item in EmployeeList)
                 {
                     if (item.EmployeeID == deleteEmployeeID)       //matching employeeID in list with the user provided employeeID
                     {
@@ -143,16 +160,37 @@ namespace Pecunia.DataAccessLayer
 
                 if (deleteEmployee != null)
                 {
-                    employeeList.Remove(deleteEmployee);         //removing employee from the list    
+                    EmployeeList.Remove(deleteEmployee);         //removing employee from the list    
                     employeeDeleted = true;
                 }
             }
-            catch (Exception ex)
+            catch (PecuniaException)
             {
-                throw new PecuniaException(ex.Message);
+                throw;
             }
             return employeeDeleted;
+        }
 
+        public bool SerializeIntoJSON(List<Employee> EmployeeList, string fileName)
+        {            
+            JsonSerializer jsonSerializer = new JsonSerializer();
+            using (StreamWriter streamWriter = new StreamWriter(fileName))   //filename is used so that we can have access over our own file
+            using (JsonWriter jsonWriter = new JsonTextWriter(streamWriter))
+            {
+                jsonSerializer.Serialize(jsonWriter, EmployeeList); // Serialize Employee data in EmployeeData.txt
+                return true;
+            }                   
+        }
+
+        public List<Employee> DeserializeFromJSON(string fileName)
+        {
+            List<Employee> EmployeeList = JsonConvert.DeserializeObject<List<Employee>>(File.ReadAllText(fileName));// Done to read data from file
+            using (StreamReader streamReader = File.OpenText(fileName))
+            {
+                JsonSerializer jsonSerializer = new JsonSerializer();
+                List<Employee> readEmployeeList = (List<Employee>)jsonSerializer.Deserialize(streamReader, typeof(List<Employee>));
+                return readEmployeeList;
+            }
         }
 
     }
