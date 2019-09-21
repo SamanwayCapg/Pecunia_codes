@@ -8,22 +8,22 @@ namespace Pecunia.Entities
     }
     public enum LoanStatus
     {
-        APPLIED, PROCESSING, REJECTED, APPROVED
+        APPLIED, PROCESSING, REJECTED, APPROVED, INVALID
     }
 
     public enum ServiceType
     {
-        AGRICULTURE, BUSINESS, OTHERS, RETIRED, SELF_EMPLOYED, SERVICE
+        AGRICULTURE, BUSINESS, OTHERS, RETIRED, SELF_EMPLOYED, SERVICE, OTHRES
     }
 
     public enum VehicleType
     {
-        TWO_WHEELER, FOUR_WHEELER, MULTI_AXLE
+        TWO_WHEELER, FOUR_WHEELER, MULTI_AXLE, OTHERS
     }
 
     public enum CourseType
     {
-        UNDERGRADUATE, MASTERS, PHD, M_PHIL 
+        UNDERGRADUATE, MASTERS, PHD, M_PHIL, OTHERS 
     }
     public interface ILoanEntities
     {

@@ -8,12 +8,7 @@ namespace Pecunia.Entities
 {
     public class CustomerEntities
     {
-        private string _customerID;
-        private string _customerName;
-        private string _customerAddress;
-        private string _customerMobile;
-        private string _customerEmail;
-        private string _customerPan;
+        
 
         public string CustomerID { get; set; }
         public string CustomerName { get; set; }

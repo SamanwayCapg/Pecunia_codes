@@ -50,7 +50,7 @@ namespace Pecunia.BusinessLayer
         public bool CreditTransactionByChequeBL(long AccountNo, double Amount, string ChequeNo)
         {
             
-            if ((AccountNo > 50000 && AccountNo < 59999) || (AccountNo > 40000 && AccountNo < 49999) || (AccountNo > 30000 && AccountNo < 39999) && Amount <= 50000 && ChequeNo.Length == 10 && (ValidateCheque(Ch) == true))
+            if ((AccountNo > 50000 && AccountNo < 59999) || (AccountNo > 40000 && AccountNo < 49999) || (AccountNo > 30000 && AccountNo < 39999) && Amount <= 50000 && ChequeNo.Length == 10 && (ValidateCheque(ChequeNo) == true))
             {
                 TransactionDAL Cheque = new TransactionDAL();
                 return Cheque.CreditTransactionByChequeDAL(AccountNo, Amount, ChequeNo);
@@ -86,14 +86,14 @@ namespace Pecunia.BusinessLayer
         }
         public void DisplayTransactionDetailsByTransactionID_DAL(string TransactionID)
         {
-            if ()
+            /*if ()
             {
                 return;
             }
             else
             {
                 throw new TransactionDetailsException("Invalid Transaction ID");
-            }
+            }*/
         }
         public bool ValidateCheque(string ChequeNo)
         {

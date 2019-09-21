@@ -3,16 +3,18 @@ using Pecunia.Exceptions;
 using Pecunia.DataAccessLayer;
 using System.Text.RegularExpressions;
 using System;
+using System.Collections.Generic;
 
 namespace Pecunia.BusinessLayer
 {
     public  interface ILoanBL
     {
         bool ApplyLoanBL<T> (T obj);
-        T GetLoanStatusBL<T> (string loanID);
+        LoanStatus GetLoanStatusBL<T> (string loanID);
         T GetLoanByCustomerID_BL<T> (string customerID);
         T GetLoanByLoanID_BL<T>(string loanID);
-        T ApproveLoanBL<T>(string loanID);
+        T ApproveLoanBL<T>(string loanID, LoanStatus updatedStatus);
+       
         
 
     }
@@ -22,38 +24,45 @@ namespace Pecunia.BusinessLayer
 
     public class EduLoanBL : ILoanBL
     {
-        public bool ApplyLoanBL<EduLoan>(EduLoan edu)
+        public bool ApplyLoanBL<T>(T obj)
         {
-            if(validate(edu) == true)
+            EduLoan edu = (EduLoan)(Object)obj;
+            if (validate(edu) == true)
             {
+                edu.LoanID = "EDU" + BusinessLogicUtil.SystemDateToString();
+                edu.InterestRate = 10.65;
+                edu.EMI_Amount = BusinessLogicUtil.ComputeEMI(edu.AmountApplied, edu.RepaymentPeriod, edu.InterestRate);
+                edu.DateOfApplication = DateTime.Now;
+                edu.Status = (LoanStatus)0;
 
+                EduLoanDAL eduDAL = new EduLoanDAL();
+                return eduDAL.ApplyLoanDAL<EduLoan>(edu);
             }
-
             return false;
         }
         
 
-        public EduLoan ApproveLoanBL<EduLoan>(string loanID)
+        public EduLoan ApproveLoanBL<EduLoan>(string loanID, LoanStatus updatedStatus)
         {
-            if (validate(loanID) == false)
+            if (BusinessLogicUtil.validate(loanID) == false)
                 throw new InvalidStringException("Invalid loan ID");
 
             EduLoanDAL EduLoanDALobj = new EduLoanDAL();
-            return EduLoanDALobj.ApproveLoanDAL<EduLoan>(loanID);
+            return (EduLoan)EduLoanDALobj.ApproveLoanDAL<EduLoan>(loanID, updatedStatus);
         }
 
         public EduLoan GetLoanByCustomerID_BL<EduLoan>(string customerID)
         {
-            if (validate(customerID) == false)
+            if (BusinessLogicUtil.validate(customerID) == false)
                 throw new InvalidStringException("Invalid customer ID");
 
             EduLoanDAL EduLoanDALobj = new EduLoanDAL();
-            return EduLoanDALobj.GetLoanByCustomerID_DAL<EduLoan>(customerID);
+            return (EduLoan)EduLoanDALobj.GetLoanByCustomerID_DAL<EduLoan>(customerID);
         }
 
-        public EduLoan GetLoanStatusBL<EduLoan>(string loanID)
+        public LoanStatus GetLoanStatusBL<EduLoan>(string loanID)
         {
-            if (validate(loanID) == false)
+            if (BusinessLogicUtil.validate(loanID) == false)
                 throw new InvalidStringException("Invalid loan ID");
 
             EduLoanDAL EduLoanDALobj = new EduLoanDAL();
@@ -62,17 +71,16 @@ namespace Pecunia.BusinessLayer
 
         public EduLoan GetLoanByLoanID_BL<EduLoan>(string loanID)
         {
-            if (validate(loanID) == false)
+            if (BusinessLogicUtil.validate(loanID) == false)
                 throw new InvalidStringException("Invalid loan ID");
 
             EduLoanDAL EduLoanDALobj = new EduLoanDAL();
-            return EduLoanDALobj.GetLoanByLoanID_DAL<EduLoan>(loanID);
+            return (EduLoan)EduLoanDALobj.GetLoanByLoanID_DAL<EduLoan>(loanID);
         }
-       
-        // method overloading
+      
         public bool validate(EduLoan edu)
         {
-            if (validate(edu.CustomerID) == false)
+            if (BusinessLogicUtil.validate(edu.CustomerID) == false)
                 throw new InvalidStringException("Invalid Customer ID");
 
             if (edu.AmountApplied >= 2000001)
@@ -89,71 +97,75 @@ namespace Pecunia.BusinessLayer
 
             return true;
         }
-        
-        // this method validates both loanID as well as customerID
-        internal bool validate(string ID)
-        {
-            //check if ID is a valid customerID or if a valid loanID
-            if (Regex.IsMatch(ID, "[0-9]{14}$") == true || Regex.IsMatch(ID, "[EDU|HOME|CAR][0-9]{14}$") == true)
-                return true;
 
-            return false;
+
+        public List<EduLoan> ListAllLoans()
+        {
+            EduLoanDAL loanDAL = new EduLoanDAL();
+            return loanDAL.ListAllLoans();
         }
-        
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public class CarLoanBL : CarLoan, ILoanBL
     {
-        public bool ApplyLoanBL<CarLoan>(CarLoan obj)
+        public bool ApplyLoanBL<T>(T obj)
         {
-            if(validate(obj) == true)
+            CarLoan car = (CarLoan)(Object)obj;
+            if(validate(car) == true)
             {
-
+                car.LoanID = "CAR" + BusinessLogicUtil.SystemDateToString();
+                car.InterestRate = 10.65;
+                car.EMI_Amount = BusinessLogicUtil.ComputeEMI(car.AmountApplied, car.RepaymentPeriod, car.InterestRate);
+                car.DateOfApplication = DateTime.Now;
+                car.Status = (LoanStatus)0;
+                
+                CarLoanDAL carDAL = new CarLoanDAL();
+                return carDAL.ApplyLoanDAL<CarLoan>(car);
             }
             return false;
         }
 
-        public CarLoan ApproveLoanBL<CarLoan>(string loanID)
+        public CarLoan ApproveLoanBL<CarLoan>(string loanID, LoanStatus updatedStatus)
         {
-            if (validate(loanID) == false)
+            if (BusinessLogicUtil.validate(loanID) == false)
                 throw new InvalidStringException("Invalid loan ID");
 
-            CarLoanDAL carloanDALobj = new CarLoanDAL();
-            return carloanDALobj.ApproveLoanDAL<CarLoan>(loanID);
+            CarLoanDAL carDAL = new CarLoanDAL();
+            return (CarLoan)carDAL.ApproveLoanDAL<CarLoan>(loanID, updatedStatus);
         }
 
         public CarLoan GetLoanByCustomerID_BL<CarLoan>(string customerID)
         {
-            if (validate(customerID) == false)
+            if (BusinessLogicUtil.validate(customerID) == false)
                 throw new InvalidStringException("Invalid customer ID");
 
-            CarLoanDAL carloanDALobj = new CarLoanDAL();
-            return carloanDALobj.GetLoanByCustomerID_DAL<CarLoan>(customerID);
+            CarLoanDAL carDAL = new CarLoanDAL();
+            return (CarLoan)carDAL.GetLoanByCustomerID_DAL<CarLoan>(customerID);
         }
 
         public CarLoan GetLoanByLoanID_BL<CarLoan>(string loanID)
         {
-            if (validate(loanID) == false)
+            if (BusinessLogicUtil.validate(loanID) == false)
                 throw new InvalidStringException("Invalid loan ID");
 
-            CarLoanDAL LoanDALobj = new CarLoanDAL();
-            return LoanDALobj.GetLoanByLoanID_DAL<CarLoan>(loanID);
+            CarLoanDAL CarDAL = new CarLoanDAL();
+            return (CarLoan)CarDAL.GetLoanByLoanID_DAL<CarLoan>(loanID);
         }
 
-        public CarLoan GetLoanStatusBL<CarLoan>(string loanID)
+        public LoanStatus GetLoanStatusBL<CarLoan>(string loanID)
         {
-            if (validate(loanID) == false)
+            if (BusinessLogicUtil.validate(loanID) == false)
                 throw new InvalidStringException("Invalid loan ID");
 
-            CarLoanDAL carloanDALobj = new CarLoanDAL();
-            return carloanDALobj.GetLoanStatusDAL<CarLoan>(loanID);
+            CarLoanDAL carDAL = new CarLoanDAL();
+            return carDAL.GetLoanStatusDAL<CarLoan>(loanID);
 
         }
 
         public bool validate(CarLoan car)
         {
-            if (validate(car.CustomerID) == false)
+            if (BusinessLogicUtil.validate(car.CustomerID) == false)
                 throw new InvalidStringException("Invalid Customer ID");
 
             if (car.AmountApplied >= 2000001)
@@ -168,14 +180,12 @@ namespace Pecunia.BusinessLayer
             return true;
         }
 
-        internal bool validate(string ID)
+        public List<CarLoan> ListAllLoans()
         {
-            //check if ID is a valid customerID or if a valid loanID
-            if (Regex.IsMatch(ID, "[0-9]{14}$") == true || Regex.IsMatch(ID, "[EDU|HOME|CAR][0-9]{14}$") == true)
-                return true;
-
-            return false;
+            CarLoanDAL loanDAL = new CarLoanDAL();
+            return loanDAL.ListAllLoans();
         }
+
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -183,14 +193,26 @@ namespace Pecunia.BusinessLayer
 
     public class HomeLoanBL : HomeLoan, ILoanBL
     {
-        public bool ApplyLoanBL<HomeLoan>(HomeLoan obj)
+        public bool ApplyLoanBL<T>(T obj)
         {
+            HomeLoan home = (HomeLoan)(Object)obj;
+            if(validate(home) == true)
+            {
+                home.LoanID = "HOME" + BusinessLogicUtil.SystemDateToString();
+                home.InterestRate = 8.50;
+                home.EMI_Amount = BusinessLogicUtil.ComputeEMI(home.AmountApplied, home.RepaymentPeriod, home.InterestRate);
+                home.DateOfApplication = DateTime.Now;
+                home.Status = (LoanStatus)0; // APPLIED
+
+                HomeLoanDAL homeDAL = new HomeLoanDAL();
+                return homeDAL.ApplyLoanDAL<HomeLoan>(home);
+            }
             return false;
         }
 
-        public HomeLoan GetLoanStatusBL<HomeLoan>(string loanID)
+        public LoanStatus GetLoanStatusBL<HomeLoan>(string loanID)
         {
-            if (validate(loanID) == false)
+            if (BusinessLogicUtil.validate(loanID) == false)
                 throw new InvalidStringException("Invalid Loan ID");
 
             HomeLoanDAL homeloanDALobj = new HomeLoanDAL();
@@ -199,41 +221,41 @@ namespace Pecunia.BusinessLayer
 
         public HomeLoan GetLoanByCustomerID_BL<HomeLoan>(string customerID)
         {
-            if (validate(customerID) == false)
+            if (BusinessLogicUtil.validate(customerID) == false)
                 throw new InvalidStringException("Invalid Customer ID");
 
             HomeLoanDAL homeloanDALobj = new HomeLoanDAL();
-            return homeloanDALobj.GetLoanByCustomerID_DAL<HomeLoan>(customerID);
+            return (HomeLoan)homeloanDALobj.GetLoanByCustomerID_DAL<HomeLoan>(customerID);
         }
 
-        public HomeLoan ApproveLoanBL<HomeLoan>(string loanID)
+        public HomeLoan ApproveLoanBL<HomeLoan>(string loanID, LoanStatus updatedStatus)
         {
-            if (validate(loanID) == false)
+            if (BusinessLogicUtil.validate(loanID) == false)
                 throw new InvalidStringException("Invalid Loan ID");
 
             HomeLoanDAL homeloanDALobj = new HomeLoanDAL();
-            return homeloanDALobj.ApproveLoanDAL<HomeLoan>(loanID);
+            return (HomeLoan)homeloanDALobj.ApproveLoanDAL<HomeLoan>(loanID, updatedStatus);
         }
 
         public HomeLoan GetLoanByLoanID_BL<HomeLoan>(string loanID)
         {
-            if (validate(loanID) == false)
+            if (BusinessLogicUtil.validate(loanID) == false)
                 throw new InvalidStringException("Invalid loan ID");
 
             HomeLoanDAL LoanDALobj = new HomeLoanDAL();
-            return LoanDALobj.GetLoanByLoanID_DAL<HomeLoan>(loanID);
+            return (HomeLoan)LoanDALobj.GetLoanByLoanID_DAL<HomeLoan>(loanID);
         }
 
         public bool validate(HomeLoan home)
         {
-            if (validate(home.CustomerID) == false)
+            if (BusinessLogicUtil.validate(home.CustomerID) == false)
                 throw new InvalidStringException("Invalid Customer ID");
 
             if (home.AmountApplied >= 2000001)
                 throw new InvalidAmountException("Maximum Education loan amount is Rs.20 lakh");
 
             if (home.RepaymentPeriod >= 11)
-                throw new InvalidRangeException("Repayment period can be maximum of 8 years");
+                throw new InvalidRangeException("Repayment period can be maximum of 10 years");
 
             if (home.SalaryDeductions >= home.GrossIncome)
                 throw new InvalidAmountException("Salary deduction can't be greater than or equal to Gross salary");
@@ -244,7 +266,18 @@ namespace Pecunia.BusinessLayer
             return true;
         }
 
-        internal bool validate(string ID)
+        public List<HomeLoan> ListAllLoans()
+        {
+            HomeLoanDAL loanDAL = new HomeLoanDAL();
+            return loanDAL.ListAllLoans();
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public static class BusinessLogicUtil
+    {
+        public static bool validate(string ID)
         {
             //check if ID is a valid customerID or if a valid loanID
             if (Regex.IsMatch(ID, "[0-9]{14}$") == true || Regex.IsMatch(ID, "[EDU|HOME|CAR][0-9]{14}$") == true)
@@ -253,10 +286,21 @@ namespace Pecunia.BusinessLayer
             return false;
         }
 
-        
+        public static string SystemDateToString()
+        {
+            DateTime time = DateTime.Now;
+            return time.ToString("yyyyMMddhhmmss");
+        }
+
+        public static double ComputeEMI(double Amount, int RepaymentPeriod, double InterestRate)
+        {
+            // implements simple interset 
+            double TotalAmountToBePaid = (Amount * InterestRate * RepaymentPeriod) / 100;
+            int TotalMonths = RepaymentPeriod * 12;
+            double EMI = TotalAmountToBePaid / TotalMonths;
+            return EMI;
+        }
     }
-
-
 
 
 
